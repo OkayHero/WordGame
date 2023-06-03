@@ -80,14 +80,14 @@ h1 {
 }
 
 /* Colorblind Palette */
-.letter-button {
-  background-color: #1E90FF;
-}
-
-.required-letter {
+.letter-button.required-letter {
   background-color: #FF4500;
 }
 
-.button {
+.letter-button.letter-button {
+  background-color: #1E90FF;
+}
+
+.button.button {
   background-color: #008000;
 }
