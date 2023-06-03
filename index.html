@@ -168,13 +168,19 @@
       const combinations = [];
 
       function backtrack(word, remainingLetters) {
-	  if (word.length >= 4 && wordList.includes(word)) {
-		combinations.push(word);
-	  }
+	if (word.length >= 4 && containsWord(word)) {
+	  combinations.push(word);
+	}
 
-	  if (remainingLetters.length === 0) {
-		return;
+	// Function to check if the word exists in the wordList
+	function containsWord(word) {
+	  for (let i = 0; i < wordList.length; i++) {
+		if (wordList[i] === word) {
+		  return true;
+		}
 	  }
+	  return false;
+	}
 
 	  for (let i = 0; i < remainingLetters.length; i++) {
 		const newWord = word + remainingLetters[i];
