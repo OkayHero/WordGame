@@ -1,0 +1,71 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#letters {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#requiredLetter {
+  font-weight: bold;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#wordInput {
+  padding: 8px;
+  width: 300px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+#submittedWords {
+  list-style-type: none;
+  padding: 0;
+}
+
+#cheatSheet {
+  display: none;
+  margin-top: 20px;
+}
+
+#cheatSheet h3 {
+  margin: 0;
+}
+
+#possibleWords {
+  list-style-type: none;
+  padding: 0;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.scoreboard h3 {
+  margin: 0;
+}
