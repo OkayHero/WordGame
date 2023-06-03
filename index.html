@@ -205,28 +205,20 @@
 	  const availableLetters = [requiredLetter];
 
 	  while (availableLetters.length < 7) {
-		const randomLetterIndex = Math.floor(Math.random() * remainingLetters.length);
-		const randomLetter = remainingLetters[randomLetterIndex];
-
-		if (availableLetters.indexOf(randomLetter) === -1) {
-		  availableLetters.push(randomLetter);
-		}
+	    const randomLetterIndex = Math.floor(Math.random() * remainingLetters.length);
+	    const randomLetter = remainingLetters[randomLetterIndex];
+	    availableLetters.push(randomLetter);
 	  }
 
 	  const combinations = generateCombinations(availableLetters);
-	  let wordsCount = 0;
 
 	  for (let i = 0; i < wordList.length; i++) {
-		if (combinations.includes(wordList[i])) {
-		  wordsCount++;
-		}
+	    if (combinations.includes(wordList[i])) {
+	      return availableLetters;
+	    }
 	  }
 
-	  if (wordsCount < 35) {
-		return generateLetters(); // Retry if the conditions are not met
-	  }
-
-	  return availableLetters;
+	  return generateLetters(); // Retry if no valid combinations found
 	}
 
     // Shuffle the letters
