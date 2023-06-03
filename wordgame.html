@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Word Game</title>
+  <style>
+    #cheatSheet {
+      display: none;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <h1>Word Game</h1>
+  <p id="letters"></p>
+  <p>Required letter: <span id="requiredLetter"></span></p>
+  <button id="shuffleBtn">Shuffle Letters</button>
+  <button id="cheatSheetBtn">Show Cheat Sheet</button>
+  <h2>Submit Your Words</h2>
+  <input type="text" id="wordInput" placeholder="Enter a word">
+  <button id="submitBtn">Submit</button>
+  <h3>Words Left: <span id="wordsLeft">-</span></h3>
+  <h3>Your Score: <span id="score">0</span></h3>
+  <h3>Submitted Words:</h3>
+  <ul id="submittedWords"></ul>
+  <div id="cheatSheet">
+    <h3>Cheat Sheet</h3>
+    <ul id="possibleWords"></ul>
+  </div>
+
+  <script>
+    const letterDistribution = [
+      { letter: 'a', weight: 9 },
+      { letter: 'b', weight: 2 },
+      { letter: 'c', weight: 2 },
+      { letter: 'd', weight: 4 },
+      { letter: 'e', weight: 12 },
+      { letter: 'f', weight: 2 },
+      { letter: 'g', weight: 3 },
+      { letter: 'h', weight: 2 },
+      { letter: 'i', weight: 9 },
+      { letter: 'j', weight: 1 },
+      { letter: 'k', weight: 1 },
+      { letter: 'l', weight: 4 },
+      { letter: 'm', weight: 2 },
+      { letter: 'n', weight: 6 },
+      { letter: 'o', weight: 8 },
+      { letter: 'p', weight: 2 },
+      { letter: 'q', weight: 1 },
+      { letter: 'r', weight: 6 },
+      { letter: 's', weight: 4 },
+      { letter: 't', weight: 6 },
+      { letter: 'u', weight: 4 },
+      { letter: 'v', weight: 2 },
+      { letter: 'w', weight: 2 },
+      { letter: 'x', weight: 1 },
+      { letter: 'y', weight: 2 },
+      { letter: 'z', weight: 1 }
+    ];
+
+    const wordlistUrl = 'https://raw.githubusercontent.com/OkayHero/WordGame/main/wordlist.json';
+    const requiredLetterElement = document.getElementById('requiredLetter');
+    const lettersElement = document.getElementById('letters');
+    const wordsLeftElement = document.getElementById('wordsLeft');
+    const scoreElement = document.getElementById('score');
+    const wordInput = document.getElementById('wordInput');
+    const submittedWordsList = document.getElementById('submittedWords');
+    const cheatSheet = document.getElementById('cheatSheet');
+    const possibleWordsList = document.getElementById('possibleWords');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const cheatSheetBtn = document.getElementById('cheatSheetBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    let letters = '';
+    let requiredLetter = '';
+    let shuffledLetters = '';
+    let wordlist = [];
+    let submittedWords = new Set();
+
+    async function loadWordlist() {
+      try {
+        const response = await fetch(wordlistUrl);
+        const data = await response.json();
+        wordlist = data.words.filter(word => word.length >= 4);
+        console.log('Wordlist loaded:', wordlist);
+        initializeGame();
+      } catch (error) {
+        console.error('Failed to load wordlist:', error);
+      }
+    }
+
+    function initializeGame() {
+      generateLetters();
+      updateUI();
+      addEventListeners();
+    }
+
+	function generateLetters() {
+	  let generatedLetters = '';
+	  let possibleWordsCount = 0;
+
+	  do {
+		const availableTiles = letterDistribution.slice();
+		const requiredTileIndex = Math.floor(Math.random() * availableTiles.length);
+		const requiredTile = availableTiles.splice(requiredTileIndex, 1)[0];
+		requiredLetter = requiredTile.letter;
+
+		generatedLetters = requiredLetter;
+		for (let i = 0; i < 6; i++) {
+		  const totalWeight = availableTiles.reduce((sum, tile) => sum + tile.weight, 0);
+		  let randomWeight = Math.floor(Math.random() * totalWeight);
+
+		  let selectedTile;
+		  for (const tile of availableTiles) {
+			randomWeight -= tile.weight;
+			if (randomWeight < 0) {
+			  selectedTile = tile;
+			  break;
+			}
+		  }
+
+		  generatedLetters += selectedTile.letter;
+		  availableTiles.splice(availableTiles.indexOf(selectedTile), 1);
+		}
+
+		possibleWordsCount = getPossibleWordsCount(generatedLetters);
+	  } while (possibleWordsCount < 35);
+
+	  letters = generatedLetters;
+	  shuffledLetters = letters;
+	}
+
+
+    function updateUI() {
+      lettersElement.textContent = 'Letters: ' + shuffledLetters;
+      requiredLetterElement.textContent = requiredLetter;
+      wordsLeftElement.textContent = getPossibleWordsCount(shuffledLetters);
+      scoreElement.textContent = calculateScore();
+
+      submittedWordsList.innerHTML = '';
+      submittedWords.forEach(word => {
+        const li = document.createElement('li');
+        li.textContent = word;
+        submittedWordsList.appendChild(li);
+      });
+
+      possibleWordsList.innerHTML = '';
+      const possibleWords = wordlist.filter(word => word.includes(requiredLetter) && isWordPossible(word, shuffledLetters));
+      possibleWords.forEach(word => {
+        const li = document.createElement('li');
+        li.textContent = word;
+        possibleWordsList.appendChild(li);
+      });
+    }
+
+    function addEventListeners() {
+      shuffleBtn.addEventListener('click', shuffleLetters);
+      cheatSheetBtn.addEventListener('click', toggleCheatSheet);
+      submitBtn.addEventListener('click', submitWord);
+    }
+
+    function shuffleLetters() {
+      const letterArray = shuffledLetters.split('');
+      for (let i = letterArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [letterArray[i], letterArray[j]] = [letterArray[j], letterArray[i]];
+      }
+      shuffledLetters = letterArray.join('');
+      updateUI();
+    }
+
+    function toggleCheatSheet() {
+      cheatSheet.style.display = cheatSheet.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function submitWord() {
+      const word = wordInput.value.trim().toLowerCase();
+
+      if (word.length >= 4 && wordlist.includes(word) && word.includes(requiredLetter) && !submittedWords.has(word)) {
+        submittedWords.add(word);
+      }
+
+      wordInput.value = '';
+      updateUI();
+    }
+
+    function calculateScore() {
+      let totalScore = 0;
+      submittedWords.forEach(word => {
+        totalScore += word.length;
+      });
+      return totalScore;
+    }
+
+    function isWordPossible(word, letters) {
+      const wordLetters = word.split('');
+      for (const letter of wordLetters) {
+        if (!letters.includes(letter)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function getPossibleWordsCount(letters) {
+      return wordlist.filter(word => word.includes(requiredLetter) && isWordPossible(word, letters)).length;
+    }
+
+    // Load wordlist dynamically
+    loadWordlist();
+  </script>
+</body>
+</html>
