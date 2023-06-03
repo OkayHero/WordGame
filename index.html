@@ -157,65 +157,77 @@
       fetch(wordListURL)
         .then(response => response.json())
         .then(data => {
-          wordList = new Set(data.words);
+          wordList = data.words;
           initializeGame();
         })
         .catch(error => console.error('Error loading word list:', error));
     }
 
     // Generate an array of all possible combinations of the letters
-    function generateCombinations(letters) {
+   function generateCombinations(letters) {
       const combinations = [];
 
       function backtrack(word, remainingLetters) {
-        if (word.length > 3 && wordList.has(word)) {
-          combinations.push(word);
-        }
+	if (word.length >= 4 && containsWord(word)) {
+	  combinations.push(word);
+	}
 
-        for (let i = 0; i < remainingLetters.length; i++) {
-          const newWord = word + remainingLetters[i];
-          const newRemaining = remainingLetters.slice(0, i).concat(remainingLetters.slice(i + 1));
-          backtrack(newWord, newRemaining);
-        }
-      }
+	// Function to check if the word exists in the wordList
+	function containsWord(word) {
+	  for (let i = 0; i < wordList.length; i++) {
+		if (wordList[i] === word) {
+		  return true;
+		}
+	  }
+	  return false;
+	}
+
+	  for (let i = 0; i < remainingLetters.length; i++) {
+		const newWord = word + remainingLetters[i];
+		const newRemaining = remainingLetters.slice(0, i).concat(remainingLetters.slice(i + 1));
+		backtrack(newWord, newRemaining);
+	  }
+	}
+
 
       backtrack('', letters);
       return combinations;
     }
 
     // Generate the letters for the game
-    function generateLetters() {
-      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const requiredLetterIndex = Math.floor(Math.random() * alphabet.length);
-      const requiredLetter = alphabet[requiredLetterIndex];
+    // Generate the letters for the game
+	function generateLetters() {
+	  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	  const requiredLetterIndex = Math.floor(Math.random() * alphabet.length);
+	  const requiredLetter = alphabet[requiredLetterIndex];
 
-      const remainingLetters = alphabet.replace(requiredLetter, '');
-      const availableLetters = [requiredLetter];
+	  const remainingLetters = alphabet.replace(requiredLetter, '');
+	  const availableLetters = [requiredLetter];
 
-      while (availableLetters.length < 7) {
-        const randomLetterIndex = Math.floor(Math.random() * remainingLetters.length);
-        const randomLetter = remainingLetters[randomLetterIndex];
+	  while (availableLetters.length < 7) {
+		const randomLetterIndex = Math.floor(Math.random() * remainingLetters.length);
+		const randomLetter = remainingLetters[randomLetterIndex];
 
-        if (availableLetters.indexOf(randomLetter) === -1) {
-          availableLetters.push(randomLetter);
-        }
-      }
+		if (availableLetters.indexOf(randomLetter) === -1) {
+		  availableLetters.push(randomLetter);
+		}
+	  }
 
-      const combinations = generateCombinations(availableLetters);
-      let wordsCount = 0;
+	  const combinations = generateCombinations(availableLetters);
+	  let wordsCount = 0;
 
-      for (const word of wordList) {
-        if (combinations.includes(word)) {
-          wordsCount++;
-        }
-      }
+	  for (let i = 0; i < wordList.length; i++) {
+		if (combinations.includes(wordList[i])) {
+		  wordsCount++;
+		}
+	  }
 
-      if (wordsCount < 35) {
-        return generateLetters(); // Retry if the conditions are not met
-      }
+	  if (wordsCount < 35) {
+		return generateLetters(); // Retry if the conditions are not met
+	  }
 
-      return availableLetters;
-    }
+	  return availableLetters;
+	}
 
     // Shuffle the letters
     function shuffleLetters() {
@@ -232,7 +244,7 @@
       const wordInput = document.getElementById('wordInput');
       const word = wordInput.value.toUpperCase();
 
-      if (wordList.has(word)) {
+      if (wordList.includes(word)) {
         const scoreElement = document.getElementById('score');
         const score = parseInt(scoreElement.innerText) + word.length;
         scoreElement.innerText = score;
