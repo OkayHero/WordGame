@@ -164,22 +164,26 @@
     }
 
     // Generate an array of all possible combinations of the letters
-    function generateCombinations(letters) {
+   function generateCombinations(letters) {
       const combinations = [];
 
-      function generate(currentCombination, remainingLetters) {
-        if (currentCombination.length >= 4) {
-          combinations.push(currentCombination.join(''));
+      function backtrack(word, remainingLetters) {
+        if (word.length >= 4 && wordList.includes(word)) {
+          combinations.push(word);
+        }
+
+        if (remainingLetters.length === 0) {
+          return;
         }
 
         for (let i = 0; i < remainingLetters.length; i++) {
-          const newCombination = [...currentCombination, remainingLetters[i]];
+          const newWord = word + remainingLetters[i];
           const newRemaining = remainingLetters.slice(0, i).concat(remainingLetters.slice(i + 1));
-          generate(newCombination, newRemaining);
+          backtrack(newWord, newRemaining);
         }
       }
 
-      generate([], letters);
+      backtrack('', letters);
       return combinations;
     }
 
