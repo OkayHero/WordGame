@@ -197,7 +197,19 @@
         const randomLetter = remainingLetters[randomLetterIndex];
 
         if (availableLetters.indexOf(randomLetter) === -1) {
-          availableLetters.push(randomLetter);
+          const lettersWithNewLetter = availableLetters.concat(randomLetter);
+          const combinations = generateCombinations(lettersWithNewLetter);
+          let wordsCount = 0;
+
+          for (let i = 0; i < wordList.length; i++) {
+            if (combinations.includes(wordList[i])) {
+              wordsCount++;
+            }
+          }
+
+          if (wordsCount >= 35) {
+            availableLetters.push(randomLetter);
+          }
         }
       }
 
