@@ -14,13 +14,22 @@ h1 {
   padding: 20px;
 }
 
-#letters {
-  font-size: 20px;
+.letter-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 18px;
   font-weight: bold;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-#requiredLetter {
-  font-weight: bold;
+.required-letter {
+  background-color: #F44336;
 }
 
 .button {
@@ -68,4 +77,17 @@ h1 {
 
 .scoreboard h3 {
   margin: 0;
+}
+
+/* Colorblind Palette */
+.letter-button {
+  background-color: #1E90FF;
+}
+
+.required-letter {
+  background-color: #FF4500;
+}
+
+.button {
+  background-color: #008000;
 }
