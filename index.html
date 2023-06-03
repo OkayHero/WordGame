@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The BG Word Challenge</title>
+  <style>
+  body {
+    background-color: #0F4C75;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+
+  h1 {
+    text-align: center;
+    color: #FFD700;
+    margin-top: 20px;
+  }
+
+  .score {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 10px;
+  }
+
+  .letters-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .letter {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFD700;
+    color: #0F4C75;
+    margin: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .required-letter {
+    background-color: #FF4136;
+    color: white;
+  }
+
+  .shuffle-button {
+    display: block;
+    margin: 20px auto;
+    background-color: #3D9970;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .submission {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .submit-box {
+    width: 200px;
+    height: 30px;
+    padding: 5px;
+    font-size: 16px;
+  }
+
+  .submit-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #0074D9;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .words-left {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+  }
+
+  .submitted-words {
+    margin-top: 20px;
+  }
+
+  .cheat-sheet {
+    display: none;
+    margin-top: 20px;
+  }
+
+  .cheat-sheet-button {
+    display: block;
+    margin: 0 auto;
+    background-color: #FF851B;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+</style>
+
+</head>
+
+<body>
+  <h1>The BG Word Challenge</h1>
+
+  <div class="score">
+    <span>Score:</span>
+    <span id="score">0</span>
+  </div>
+
+  <div class="letters-container" id="lettersContainer"></div>
+
+  <button class="shuffle-button" onclick="shuffleLetters()">Shuffle Letters</button>
+
+  <div class="submission">
+    <input type="text" id="wordInput" placeholder="Enter word">
+    <button class="submit-button" onclick="submitWord()">Submit</button>
+  </div>
+
+  <div class="words-left">
+    <span>Words Left:</span>
+    <span id="wordsLeft">0</span>
+  </div>
+
+  <div class="submitted-words">
+    <span>Submitted Words:</span>
+    <ul id="submittedWords"></ul>
+  </div>
+
+  <div class="cheat-sheet">
+    <button class="cheat-sheet-button" onclick="toggleCheatSheet()">Show Cheat Sheet</button>
+    <ul id="cheatSheet"></ul>
+  </div>
+
+  <script>
+    // Word list for validation
+    const wordListURL = 'wordlist.json';
+    let wordList = [];
+
+    // Load the word list
+    function loadWordList() {
+      fetch(wordListURL)
+        .then(response => response.json())
+        .then(data => {
+          wordList = data;
+          initializeGame();
+        })
+        .catch(error => console.error('Error loading word list:', error));
+    }
+
+    // Generate an array of all possible combinations of the letters
+    function generateCombinations(letters) {
+      const combinations = [];
+
+      function generate(currentCombination, remainingLetters) {
+        if (currentCombination.length >= 4) {
+          combinations.push(currentCombination.join(''));
+        }
+
+        for (let i = 0; i < remainingLetters.length; i++) {
+          const newCombination = [...currentCombination, remainingLetters[i]];
+          const newRemaining = remainingLetters.slice(0, i).concat(remainingLetters.slice(i + 1));
+          generate(newCombination, newRemaining);
+        }
+      }
+
+      generate([], letters);
+      return combinations;
+    }
+
+    // Generate the letters for the game
+    function generateLetters() {
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const requiredLetterIndex = Math.floor(Math.random() * alphabet.length);
+      const requiredLetter = alphabet[requiredLetterIndex];
+
+      const remainingLetters = alphabet.replace(requiredLetter, '');
+      const availableLetters = [requiredLetter];
+
+      while (availableLetters.length < 7) {
+        const randomLetterIndex = Math.floor(Math.random() * remainingLetters.length);
+        const randomLetter = remainingLetters[randomLetterIndex];
+
+        if (availableLetters.indexOf(randomLetter) === -1) {
+          availableLetters.push(randomLetter);
+        }
+      }
+
+      return availableLetters;
+    }
+
+    // Shuffle the letters
+    function shuffleLetters() {
+      const lettersContainer = document.getElementById('lettersContainer');
+      const letters = Array.from(lettersContainer.children);
+
+      letters.forEach(letter => {
+        letter.innerText = generateLetters().pop();
+      });
+    }
+
+    // Submit a word
+    function submitWord() {
+      const wordInput = document.getElementById('wordInput');
+      const word = wordInput.value.toUpperCase();
+
+      if (wordList.includes(word)) {
+        const scoreElement = document.getElementById('score');
+        const score = parseInt(scoreElement.innerText) + word.length;
+        scoreElement.innerText = score;
+
+        const submittedWords = document.getElementById('submittedWords');
+        const li = document.createElement('li');
+        li.innerText = word;
+        submittedWords.appendChild(li);
+
+        wordInput.value = '';
+      } else {
+        alert('Invalid word!');
+      }
+    }
+
+    // Update the words left count
+    function updateWordsLeft() {
+      const wordsLeftElement = document.getElementById('wordsLeft');
+      const submittedWordsCount = document.getElementById('submittedWords').children.length;
+      const wordsLeft = Math.max(0, wordList.length - submittedWordsCount);
+      wordsLeftElement.innerText = wordsLeft;
+    }
+
+    // Toggle cheat sheet visibility
+    function toggleCheatSheet() {
+      const cheatSheet = document.querySelector('.cheat-sheet');
+      cheatSheet.style.display = cheatSheet.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Initialize the game
+    function initializeGame() {
+      const lettersContainer = document.getElementById('lettersContainer');
+      lettersContainer.innerHTML = '';
+
+      const letters = generateLetters();
+      letters.forEach((letter, index) => {
+        const letterElement = document.createElement('div');
+        letterElement.classList.add('letter');
+        if (index === 0) {
+          letterElement.classList.add('required-letter');
+        }
+        letterElement.innerText = letter;
+        letterElement.addEventListener('click', () => {
+          const wordInput = document.getElementById('wordInput');
+          wordInput.value += letter;
+        });
+        lettersContainer.appendChild(letterElement);
+      });
+
+      updateWordsLeft();
+    }
+
+    // Load the word list and initialize the game
+    loadWordList();
+  </script>
+</body>
+
+</html>
