@@ -149,7 +149,7 @@
 
   <script>
     // Word list for validation
-    const wordListURL = 'wordlist.json';
+    const wordListURL = 'https://raw.githubusercontent.com/OkayHero/WordGame/main/wordlist.json';
     let wordList = [];
 
     // Load the word list
@@ -157,7 +157,7 @@
       fetch(wordListURL)
         .then(response => response.json())
         .then(data => {
-          wordList = data;
+          wordList = data.words;
           initializeGame();
         })
         .catch(error => console.error('Error loading word list:', error));
