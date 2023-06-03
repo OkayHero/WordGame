@@ -111,6 +111,42 @@
       cursor: pointer;
       border-radius: 5px;
     }
+
+    /* Vaporwave aesthetics */
+    body {
+      background-color: #4B0082;
+      background-image: linear-gradient(to bottom right, #4B0082, #0000FF);
+    }
+
+    h1, .score, .shuffle-button, .words-left {
+      color: #FF1493;
+    }
+
+    .letter {
+      background-color: #00FFFF;
+      color: #4B0082;
+    }
+
+    .required-letter {
+      background-color: #FF00FF;
+    }
+
+    .submission {
+      color: #FF69B4;
+    }
+
+    .submit-box, .submit-button {
+      background-color: #9400D3;
+      color: white;
+    }
+
+    .submitted-words, .cheat-sheet {
+      color: #FFC0CB;
+    }
+
+    .cheat-sheet-button {
+      background-color: #FF69B4;
+    }
   </style>
 
 </head>
@@ -164,62 +200,62 @@
     }
 
     // Generate an array of all possible combinations of the letters
-   function generateCombinations(letters) {
+    function generateCombinations(letters) {
       const combinations = [];
 
       function backtrack(word, remainingLetters) {
-	if (word.length >= 4 && containsWord(word)) {
-	  combinations.push(word);
-	}
+        if (word.length >= 4 && containsWord(word)) {
+          combinations.push(word);
+        }
 
-	// Function to check if the word exists in the wordList
-	function containsWord(word) {
-	  for (let i = 0; i < wordList.length; i++) {
-		if (wordList[i] === word) {
-		  return true;
-		}
-	  }
-	  return false;
-	}
+        function containsWord(word) {
+          return wordList.includes(word);
+        }
 
-	  for (let i = 0; i < remainingLetters.length; i++) {
-		const newWord = word + remainingLetters[i];
-		const newRemaining = remainingLetters.slice(0, i).concat(remainingLetters.slice(i + 1));
-		backtrack(newWord, newRemaining);
-	  }
-	}
-
+        for (let i = 0; i < remainingLetters.length; i++) {
+          const newWord = word + remainingLetters[i];
+          const newRemaining = remainingLetters.slice(0, i).concat(remainingLetters.slice(i + 1));
+          backtrack(newWord, newRemaining);
+        }
+      }
 
       backtrack('', letters);
       return combinations;
     }
 
     // Generate the letters for the game
-    // Generate the letters for the game
-	function generateLetters() {
-	  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	  const requiredLetterIndex = Math.floor(Math.random() * alphabet.length);
-	  const requiredLetter = alphabet[requiredLetterIndex];
+    function generateLetters() {
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const requiredLetterIndex = Math.floor(Math.random() * alphabet.length);
+      const requiredLetter = alphabet[requiredLetterIndex];
 
-	  const remainingLetters = alphabet.replace(requiredLetter, '');
-	  const availableLetters = [requiredLetter];
+      const remainingLetters = alphabet.replace(requiredLetter, '');
+      const availableLetters = [requiredLetter];
 
-	  while (availableLetters.length < 7) {
-	    const randomLetterIndex = Math.floor(Math.random() * remainingLetters.length);
-	    const randomLetter = remainingLetters[randomLetterIndex];
-	    availableLetters.push(randomLetter);
-	  }
+      while (availableLetters.length < 7) {
+        const randomLetterIndex = Math.floor(Math.random() * remainingLetters.length);
+        const randomLetter = remainingLetters[randomLetterIndex];
 
-	  const combinations = generateCombinations(availableLetters);
+        if (availableLetters.indexOf(randomLetter) === -1) {
+          availableLetters.push(randomLetter);
+        }
+      }
 
-	  for (let i = 0; i < wordList.length; i++) {
-	    if (combinations.includes(wordList[i])) {
-	      return availableLetters;
-	    }
-	  }
+      const combinations = generateCombinations(availableLetters);
+      let wordsCount = 0;
 
-	  return generateLetters(); // Retry if no valid combinations found
-	}
+      for (let i = 0; i < wordList.length; i++) {
+        if (combinations.includes(wordList[i])) {
+          wordsCount++;
+        }
+      }
+
+      if (wordsCount < 35) {
+        return generateLetters(); // Retry if the conditions are not met
+      }
+
+      return availableLetters;
+    }
 
     // Shuffle the letters
     function shuffleLetters() {
