@@ -6,112 +6,112 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The BG Word Challenge</title>
   <style>
-  body {
-    background-color: #0F4C75;
-    color: white;
-    font-family: Arial, sans-serif;
-  }
+    body {
+      background-color: #0F4C75;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
 
-  h1 {
-    text-align: center;
-    color: #FFD700;
-    margin-top: 20px;
-  }
+    h1 {
+      text-align: center;
+      color: #FFD700;
+      margin-top: 20px;
+    }
 
-  .score {
-    text-align: center;
-    font-size: 24px;
-    margin-top: 10px;
-  }
+    .score {
+      text-align: center;
+      font-size: 24px;
+      margin-top: 10px;
+    }
 
-  .letters-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
+    .letters-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
 
-  .letter {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #FFD700;
-    color: #0F4C75;
-    margin: 5px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-  }
+    .letter {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #FFD700;
+      color: #0F4C75;
+      margin: 5px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
 
-  .required-letter {
-    background-color: #FF4136;
-    color: white;
-  }
+    .required-letter {
+      background-color: #FF4136;
+      color: white;
+    }
 
-  .shuffle-button {
-    display: block;
-    margin: 20px auto;
-    background-color: #3D9970;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
+    .shuffle-button {
+      display: block;
+      margin: 20px auto;
+      background-color: #3D9970;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
 
-  .submission {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-  }
+    .submission {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
 
-  .submit-box {
-    width: 200px;
-    height: 30px;
-    padding: 5px;
-    font-size: 16px;
-  }
+    .submit-box {
+      width: 200px;
+      height: 30px;
+      padding: 5px;
+      font-size: 16px;
+    }
 
-  .submit-button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #0074D9;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-  }
+    .submit-button {
+      margin-left: 10px;
+      padding: 5px 10px;
+      background-color: #0074D9;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
 
-  .words-left {
-    text-align: center;
-    font-size: 24px;
-    margin-top: 20px;
-  }
+    .words-left {
+      text-align: center;
+      font-size: 24px;
+      margin-top: 20px;
+    }
 
-  .submitted-words {
-    margin-top: 20px;
-  }
+    .submitted-words {
+      margin-top: 20px;
+    }
 
-  .cheat-sheet {
-    display: none;
-    margin-top: 20px;
-  }
+    .cheat-sheet {
+      display: none;
+      margin-top: 20px;
+    }
 
-  .cheat-sheet-button {
-    display: block;
-    margin: 0 auto;
-    background-color: #FF851B;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-</style>
+    .cheat-sheet-button {
+      display: block;
+      margin: 0 auto;
+      background-color: #FF851B;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
 
 </head>
 
@@ -197,20 +197,21 @@
         const randomLetter = remainingLetters[randomLetterIndex];
 
         if (availableLetters.indexOf(randomLetter) === -1) {
-          const lettersWithNewLetter = availableLetters.concat(randomLetter);
-          const combinations = generateCombinations(lettersWithNewLetter);
-          let wordsCount = 0;
-
-          for (let i = 0; i < wordList.length; i++) {
-            if (combinations.includes(wordList[i])) {
-              wordsCount++;
-            }
-          }
-
-          if (wordsCount >= 35) {
-            availableLetters.push(randomLetter);
-          }
+          availableLetters.push(randomLetter);
         }
+      }
+
+      const combinations = generateCombinations(availableLetters);
+      let wordsCount = 0;
+
+      for (let i = 0; i < wordList.length; i++) {
+        if (combinations.includes(wordList[i])) {
+          wordsCount++;
+        }
+      }
+
+      if (wordsCount < 35) {
+        return generateLetters(); // Retry if the conditions are not met
       }
 
       return availableLetters;
@@ -242,7 +243,6 @@
         submittedWords.appendChild(li);
 
         wordInput.value = '';
-        updateWordsLeft();
       } else {
         alert('Invalid word!');
       }
@@ -251,35 +251,31 @@
     // Update the words left count
     function updateWordsLeft() {
       const wordsLeftElement = document.getElementById('wordsLeft');
-      const submittedWordsCount = document.getElementById('submittedWords').children.length;
-      const wordsLeft = Math.max(0, wordList.length - submittedWordsCount);
+      const submittedWords = document.getElementById('submittedWords');
+      const submittedCount = submittedWords.getElementsByTagName('li').length;
+      const wordsLeft = Math.max(0, 35 - submittedCount);
       wordsLeftElement.innerText = wordsLeft;
     }
 
     // Toggle cheat sheet visibility
     function toggleCheatSheet() {
-      const cheatSheet = document.querySelector('.cheat-sheet');
+      const cheatSheet = document.getElementById('cheatSheet');
       cheatSheet.style.display = cheatSheet.style.display === 'none' ? 'block' : 'none';
     }
 
     // Initialize the game
     function initializeGame() {
       const lettersContainer = document.getElementById('lettersContainer');
-      lettersContainer.innerHTML = '';
 
       const letters = generateLetters();
-      letters.forEach((letter, index) => {
-        const letterElement = document.createElement('div');
-        letterElement.classList.add('letter');
-        if (index === 0) {
-          letterElement.classList.add('required-letter');
+      letters.forEach(letter => {
+        const div = document.createElement('div');
+        div.innerText = letter;
+        div.classList.add('letter');
+        if (letter === letters[0]) {
+          div.classList.add('required-letter');
         }
-        letterElement.innerText = letter;
-        letterElement.addEventListener('click', () => {
-          const wordInput = document.getElementById('wordInput');
-          wordInput.value += letter;
-        });
-        lettersContainer.appendChild(letterElement);
+        lettersContainer.appendChild(div);
       });
 
       updateWordsLeft();
