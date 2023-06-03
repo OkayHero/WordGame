@@ -210,6 +210,13 @@
         }
       }
 
+      if (wordsCount < 35 || availableLetters.length !== 7) {
+        return generateLetters(); // Retry if the conditions are not met
+      }
+
+      return availableLetters;
+    }
+
       if (wordsCount < 35) {
         return generateLetters(); // Retry if the conditions are not met
       }
