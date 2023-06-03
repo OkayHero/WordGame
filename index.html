@@ -111,42 +111,6 @@
       cursor: pointer;
       border-radius: 5px;
     }
-
-    /* Vaporwave aesthetics */
-    body {
-      background-color: #4B0082;
-      background-image: linear-gradient(to bottom right, #4B0082, #0000FF);
-    }
-
-    h1, .score, .shuffle-button, .words-left {
-      color: #FF1493;
-    }
-
-    .letter {
-      background-color: #00FFFF;
-      color: #4B0082;
-    }
-
-    .required-letter {
-      background-color: #FF00FF;
-    }
-
-    .submission {
-      color: #FF69B4;
-    }
-
-    .submit-box, .submit-button {
-      background-color: #9400D3;
-      color: white;
-    }
-
-    .submitted-words, .cheat-sheet {
-      color: #FFC0CB;
-    }
-
-    .cheat-sheet-button {
-      background-color: #FF69B4;
-    }
   </style>
 
 </head>
@@ -185,7 +149,7 @@
 
   <script>
     // Word list for validation
-    const wordListURL = 'wordlist.json';
+    const wordListURL = 'https://raw.githubusercontent.com/OkayHero/WordGame/main/wordlist.json';
     let wordList = [];
 
     // Load the word list
@@ -193,7 +157,7 @@
       fetch(wordListURL)
         .then(response => response.json())
         .then(data => {
-          wordList = data.words;
+          wordList = new Set(data.words);
           initializeGame();
         })
         .catch(error => console.error('Error loading word list:', error));
@@ -204,12 +168,8 @@
       const combinations = [];
 
       function backtrack(word, remainingLetters) {
-        if (word.length >= 4 && containsWord(word)) {
+        if (word.length > 3 && wordList.has(word)) {
           combinations.push(word);
-        }
-
-        function containsWord(word) {
-          return wordList.includes(word);
         }
 
         for (let i = 0; i < remainingLetters.length; i++) {
@@ -244,8 +204,8 @@
       const combinations = generateCombinations(availableLetters);
       let wordsCount = 0;
 
-      for (let i = 0; i < wordList.length; i++) {
-        if (combinations.includes(wordList[i])) {
+      for (const word of wordList) {
+        if (combinations.includes(word)) {
           wordsCount++;
         }
       }
@@ -272,7 +232,7 @@
       const wordInput = document.getElementById('wordInput');
       const word = wordInput.value.toUpperCase();
 
-      if (wordList.includes(word)) {
+      if (wordList.has(word)) {
         const scoreElement = document.getElementById('score');
         const score = parseInt(scoreElement.innerText) + word.length;
         scoreElement.innerText = score;
