@@ -263,13 +263,8 @@
 	  for (var i = 0; i < letterButtons.length; i++) {
 		var button = letterButtons.eq(i);
 		var buttonLetter = button.text().trim();
-		console.log("Button text:", buttonLetter);
-		console.log("Required letter:", requiredLetter);
-		console.log("Button text type:", typeof buttonLetter);
-		console.log("Required letter type:", typeof requiredLetter);
 
 		if (buttonLetter.trim() === requiredLetter.trim()) {
-		  console.log("Matching button found:", buttonLetter);
 		  button.addClass("required");
 		}
 	  }
