@@ -3,90 +3,116 @@
 <head>
   <title>The BG Challenge</title>
   <style>
-    body {
-      background-color: #252a34;
-      color: #ffffff;
-      font-family: 'Courier New', Courier, monospace;
-      text-align: center;
-    }
+	  body {
+		background-color: #fdf0f4;
+		color: #252a34;
+		font-family: 'Courier New', Courier, monospace;
+		text-align: center;
+	  }
 
-    h1 {
-      font-size: 36px;
-      margin-top: 50px;
-    }
+	  h1 {
+		font-size: 36px;
+		margin-top: 50px;
+		color: #fe4a49;
+	  }
 
-    #score {
-      font-size: 24px;
-      margin-top: 20px;
-    }
+	  #score {
+		font-size: 24px;
+		margin-top: 20px;
+	  }
 
-    #letters {
-      font-size: 24px;
-      margin-top: 20px;
-    }
+	  #letters {
+		font-size: 24px;
+		margin-top: 20px;
+		color: #61dafb;
+	  }
 
-    #requiredLetter {
-      font-size: 18px;
-      margin-top: 10px;
-      font-weight: bold;
-    }
+	  #requiredLetter {
+		font-size: 18px;
+		margin-top: 10px;
+		font-weight: bold;
+		color: #ff8080; /* Updated required letter button color */
+	  }
 
-    #letterButtons {
-      margin-top: 30px;
-    }
+	  #letterButtons {
+		margin-top: 30px;
+	  }
 
-    .letterButton {
-      display: inline-block;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: #61dafb;
-      margin: 5px;
-      line-height: 50px;
-      font-size: 20px;
-      color: #ffffff;
-      cursor: pointer;
-    }
+	  .letterButton {
+		display: inline-block;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		background-color: #61dafb;
+		margin: 5px;
+		line-height: 50px;
+		font-size: 20px;
+		color: #ffffff;
+		cursor: pointer;
+	  }
 
-    .letterButton.required {
-      background-color: #ff8080;
-    }
+	.letterButton.required {
+	  background-color: #FF8080;
+	  color: #ffffff;
+	}
 
-    #shuffleButton {
-      margin-top: 20px;
-    }
+	  #shuffleButton {
+		margin-top: 20px;
+		background-color: #61dafb;
+		color: #ffffff;
+		border: none;
+		padding: 10px 20px;
+		font-size: 18px;
+		border-radius: 5px;
+		cursor: pointer;
+	  }
 
-    #submissionBox {
-      margin-top: 30px;
-    }
+	  #submissionBox {
+		margin-top: 30px;
+	  }
 
-    #submitButton {
-      margin-top: 10px;
-    }
+	  #submitButton {
+		margin-top: 10px;
+		background-color: #61dafb;
+		color: #ffffff;
+		border: none;
+		padding: 10px 20px;
+		font-size: 18px;
+		border-radius: 5px;
+		cursor: pointer;
+	  }
 
-    #wordsLeft {
-      font-size: 18px;
-      margin-top: 30px;
-    }
+	  #wordsLeft {
+		font-size: 18px;
+		margin-top: 30px;
+	  }
 
-    #submittedWords {
-      font-size: 18px;
-      margin-top: 30px;
-      text-align: left;
-      white-space: pre;
-    }
+	  #submittedWords {
+		font-size: 18px;
+		margin-top: 30px;
+		text-align: left;
+		white-space: pre;
+	  }
 
-    #cheatSheetButton {
-      margin-top: 20px;
-    }
+	  #cheatSheetButton {
+		margin-top: 20px;
+		background-color: #61dafb;
+		color: #ffffff;
+		border: none;
+		padding: 10px 20px;
+		font-size: 18px;
+		border-radius: 5px;
+		cursor: pointer;
+	  }
 
-    #cheatSheet {
-      font-size: 18px;
-      margin-top: 30px;
-      text-align: left;
-      white-space: pre;
-    }
-  </style>
+	  #cheatSheet {
+		font-size: 18px;
+		margin-top: 30px;
+		text-align: left;
+		white-space: pre;
+		display: none;
+	  }
+	</style>
 </head>
 <body>
   <h1>The BG Challenge</h1>
@@ -105,217 +131,241 @@
   <div id="cheatSheet"></div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    var combinationList = [];
-    var wordList = [];
-    var letters = "";
-    var requiredLetter = "";
-    var score = 0;
-    var wordsLeft = 0;
-    var submittedWords = [];
-	
-	function TrieNode() {
-	  this.children = {};
-	  this.isEndOfWord = false;
-	}
+	var wordLists = [];
 
-	function Trie() {
-	  this.root = new TrieNode();
-	}
+	function shuffleLetters() {
+	  var letterButtons = $(".letterButton");
+	  var selectedLetters = "";
 
-	Trie.prototype.addWord = function(word) {
-	  var current = this.root;
-	  for (var i = 0; i < word.length; i++) {
-		var char = word[i];
-		if (!current.children[char]) {
-		  current.children[char] = new TrieNode();
-		}
-		current = current.children[char];
+	  // Disable the shuffle button during the animation
+	  $("#shuffleButton").prop("disabled", true);
+
+	  // Store the required letter, if any
+	  var requiredButton = letterButtons.filter(".required");
+	  var requiredLetter = "";
+
+	  if (requiredButton.length) {
+		requiredLetter = requiredButton.text().trim();
 	  }
-	  current.isEndOfWord = true;
-	};
 
-	Trie.prototype.getWordsWithLetters = function(letters, allowDuplicates) {
-	  var results = [];
-	  var current = this.root;
-	  var visited = {};
+	  for (var i = 0; i < letterButtons.length; i++) {
+		var targetIndex = Math.floor(Math.random() * letterButtons.length);
+		var targetButton = letterButtons.eq(targetIndex);
 
-	  function search(node, word) {
-		if (node.isEndOfWord && (allowDuplicates || !visited[word])) {
-		  results.push(word);
-		  visited[word] = true;
-		}
+		var temp = targetButton.text();
+		targetButton.text(letterButtons.eq(i).text());
+		letterButtons.eq(i).text(temp);
 
-		for (var char in node.children) {
-		  if (letters.includes(char)) {
-			var index = letters.indexOf(char);
-			letters = letters.slice(0, index) + letters.slice(index + 1);
-			search(node.children[char], word + char);
-			letters = letters.slice(0, index) + char + letters.slice(index);
+		selectedLetters += letterButtons.eq(i).text();
+	  }
+
+	  // Update the selectedLetters variable and check if the required letter exists
+	  selectedLetters = selectedLetters.trim();
+	  var requiredLetterExists = selectedLetters.includes(requiredLetter);
+
+	  // Add the required class to the correct button
+	  letterButtons.removeClass("required");
+	  if (requiredLetter && requiredLetterExists) {
+		letterButtons.each(function() {
+		  if ($(this).text().trim() === requiredLetter) {
+			$(this).addClass("required");
+			return false; // Exit the loop after finding the required button
 		  }
-		}
+		});
 	  }
 
-	  search(current, "");
+	  $("#wordInput").val("");
 
-	  return results;
-	};
-
-	function fetchWordList(callback) {
-	  $.get("https://raw.githubusercontent.com/OkayHero/WordGame/main/wordlist.txt", function(data) {
-		wordList = data.trim().split("\n");
-		if (callback) {
-		  callback();
-		}
-	  });
+	  // Enable the shuffle button after the animation completes
+	  setTimeout(function() {
+		$("#shuffleButton").prop("disabled", false);
+	  }, 1000); // Adjust the delay as needed
 	}
 
-    function fetchCombinationList(callback) {
-	  $.get("https://raw.githubusercontent.com/OkayHero/WordGame/main/combinations.txt", function(data) {
-		var lines = data.trim().split("\n");
-		combinationList = lines.map(function(line) {
-		  var parts = line.split(" ");
-		  return {
-			letters: parts[0].toUpperCase(),
-			requiredLetter: parts[1].toUpperCase()
-		  };
-		});
-		generateLetters();
-		if (callback) {
-		  callback();
-		}
-	  });
-	}
+    function fetchWordLists(callback) {
+      $.get("https://raw.githubusercontent.com/OkayHero/WordGame/main/filtered_wordlists.txt")
+        .done(function(data) {
+          var lines = data.split("\n");
+          var currentLetter = null;
+          wordLists = {};
 
-    function generateLetters() {
-      var combination = combinationList[Math.floor(Math.random() * combinationList.length)];
-      letters = combination.letters;
-      requiredLetter = combination.requiredLetter;
-      updateLetters();
-      generateCheatSheet();
+          lines.forEach(function(line) {
+            if (line.startsWith("#")) {
+              currentLetter = line.substring(1).trim();
+              wordLists[currentLetter] = [];
+            } else {
+              wordLists[currentLetter].push(line.trim());
+            }
+          });
+
+          if (callback) {
+            callback();
+          }
+          fetchCombinationList();
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          console.error("Error fetching word lists:", errorThrown);
+        });
     }
 
-	function updateLetters() {
+	function fetchCombinationList(callback) {
+	  $.get("https://raw.githubusercontent.com/OkayHero/WordGame/main/combinations.txt")
+		.done(function(data) {
+		  var lines = data.trim().split("\n");
+		  var combinationList = lines.map(function(line) {
+			var parts = line.split(" ");
+			return {
+			  letters: parts[0].toUpperCase(),
+			  requiredLetter: parts[1].toUpperCase()
+			};
+		  });
+		  generateLetters(combinationList);
+		  if (callback) {
+			callback();
+		  }
+		})
+		.fail(function(jqXHR, textStatus, errorThrown) {
+		  console.error("Error fetching combination list:", errorThrown);
+		});
+	}
+
+	function generateLetters(combinationList) {
+	  var combination = combinationList[Math.floor(Math.random() * combinationList.length)];
+	  var letters = combination.letters;
+	  var requiredLetter = combination.requiredLetter;
+	  updateLetters(letters, requiredLetter);
+	  generateCheatSheet(letters, requiredLetter); // Call generateCheatSheet separately after updating the letters
+	}
+
+	function updateLetters(letters, requiredLetter) {
 	  var lettersHTML = "";
 	  for (var i = 0; i < letters.length; i++) {
 		var letter = letters[i];
 		var buttonClass = "letterButton";
 		if (letter === requiredLetter) {
-		  buttonClass += " required";
+		  lettersHTML += '<button class="required">' + letter + '</button>';
+		} else {
+		  lettersHTML += '<button class="' + buttonClass + '">' + letter + '</button>';
 		}
-		lettersHTML += '<button class="' + buttonClass + '">' + letter + '</button>';
 	  }
 	  $("#letters").html(lettersHTML);
 	  $("#requiredLetter").text("Required Letter: " + requiredLetter);
-	  setupLetterButtons();
+	  setupLetterButtons(requiredLetter);
 	}
 
-    function setupLetterButtons() {
-      $(".letterButton").click(function() {
-        var letter = $(this).text();
-        $("#wordInput").val($("#wordInput").val() + letter);
-      });
-    }
+	function setupLetterButtons(requiredLetter) {
+	  var selectedLetters = "";
 
-    function shuffleLetters() {
-      var shuffledLetters = letters.split("").sort(function() {
-        return 0.5 - Math.random();
-      }).join("");
-      letters = shuffledLetters;
-      updateLetters();
-    }
+	  var letterButtons = $(".letterButton");
 
-    function submitWord() {
-      var word = $("#wordInput").val().trim().toUpperCase();
-      if (word.length >= 4 && word.includes(requiredLetter) && isWordPossible(word) && !submittedWords.includes(word)) {
-        submittedWords.push(word);
-        updateSubmittedWords();
-        score += word.length;
-        $("#scoreValue").text(score);
-        $("#wordInput").val("");
-      }
-    }
+	  letterButtons.removeClass("required");
 
-    function updateSubmittedWords() {
-      var wordsHTML = "";
-      for (var i = 0; i < submittedWords.length; i++) {
-        wordsHTML += submittedWords[i] + "\n";
-      }
-      $("#submittedWords").text(wordsHTML);
-    }
+	  for (var i = 0; i < letterButtons.length; i++) {
+		var button = letterButtons.eq(i);
+		var buttonLetter = button.text().trim();
+		console.log("Button text:", buttonLetter);
+		console.log("Required letter:", requiredLetter);
+		console.log("Button text type:", typeof buttonLetter);
+		console.log("Required letter type:", typeof requiredLetter);
 
-    // Check if a word can be formed using the given letters
-	function isWordPossible(word) {
-	  var lettersCopy = letters.slice(); // Create a copy of the letters array
-	  for (var i = 0; i < word.length; i++) {
-		var letterIndex = lettersCopy.indexOf(word[i]);
-		if (letterIndex !== -1) {
-		  lettersCopy.splice(letterIndex, 1); // Remove the used letter from the copy
-		} else {
-		  return false; // Letter not found, word is not possible
+		if (buttonLetter.trim() === requiredLetter.trim()) {
+		  console.log("Matching button found:", buttonLetter);
+		  button.addClass("required");
 		}
 	  }
-	  return true; // All letters of the word are found
 	}
 
-	// Generate the list of possible words based on the combination list
-	function generatePossibleWords() {
-	  var possibleWords = wordList.filter(function (word) {
-		return word.length >= 4 && word.includes(requiredLetter) && !submittedWords.includes(word);
+	
+
+	function generatePossibleWords(letters, requiredLetter) {
+	  var possibleWords = [];
+
+	  var wordList = wordLists[requiredLetter];
+	  if (!wordList) {
+		return possibleWords;
+	  }
+
+	  var availableLetters = letters.split('');
+
+	  wordList.forEach(function(word) {
+		var wordChars = word.split('');
+		var validWord = true;
+		var letterUsed = [];
+
+		for (var i = 0; i < wordChars.length; i++) {
+		  var char = wordChars[i];
+		  var charIndex = availableLetters.indexOf(char);
+
+		  if (charIndex !== -1) {
+			letterUsed.push(char);
+		  } else if (letterUsed.indexOf(char) !== -1) {
+			// Letter already used in the word
+			continue;
+		  } else {
+			validWord = false;
+			break;
+		  }
+		}
+
+		if (validWord) {
+		  possibleWords.push(word);
+		}
 	  });
 
 	  return possibleWords;
 	}
-	
-	// Generate all possible combinations of the given letters
-	function generateCombinations(letters) {
-	  var combinations = [];
-	  var lettersArr = letters.split("");
-	  for (var i = 0; i < lettersArr.length; i++) {
-		combinations.push(lettersArr[i]);
-		for (var j = i + 1; j < lettersArr.length; j++) {
-		  combinations.push(lettersArr[i] + lettersArr[j]);
-		  for (var k = j + 1; k < lettersArr.length; k++) {
-			combinations.push(lettersArr[i] + lettersArr[j] + lettersArr[k]);
-			for (var l = k + 1; l < lettersArr.length; l++) {
-			  combinations.push(lettersArr[i] + lettersArr[j] + lettersArr[k] + lettersArr[l]);
-			}
-		  }
-		}
-	  }
-	  return combinations;
-	}
 
-	function generateCheatSheet() {
-	  var possibleWords = generatePossibleWords();
-	  console.log("Possible Words:", possibleWords); // Debug statement
+	
+	function generateCheatSheet(letters) {
+	  var requiredLetter = $("#requiredLetter").text().trim().split(": ")[1];
+
+	  var possibleWords = generatePossibleWords(letters, requiredLetter);
 	  $("#cheatSheet").text(possibleWords.join("\n"));
 	  wordsLeft = possibleWords.length;
-	  console.log("Words Left:", wordsLeft); // Debug statement
 	  $("#wordsLeftValue").text(wordsLeft);
 	}
-	
-	generateCheatSheet();
-	
-    $(document).ready(function() {
-	  fetchWordList(function() {
-        fetchCombinationList();
-      });
-      fetchCombinationList();
-      $("#shuffleButton").click(function() {
-        shuffleLetters();
-      });
-      $("#submitButton").click(function() {
-        submitWord();
-      });
-      $("#wordInput").keypress(function(event) {
-        if (event.which === 13) {
-          submitWord();
-        }
-      });
-      $("#cheatSheetButton").click(function() {
-        $("#cheatSheet").toggle();
-      });
-    });
+
+	function submitWord() {
+	  var submittedWord = $("#wordInput").val().toUpperCase();
+	  var possibleWords = $("#cheatSheet").text().split("\n");
+	  var wordIndex = possibleWords.indexOf(submittedWord);
+
+	  if (wordIndex !== -1) {
+		// Word is valid and found in the possibleWords array
+		possibleWords.splice(wordIndex, 1); // Remove the word from the array
+		$("#cheatSheet").text(possibleWords.join("\n")); // Update the cheat sheet
+		wordsLeft = possibleWords.length; // Update the wordsLeft counter
+		$("#wordsLeftValue").text(wordsLeft);
+		$("#submittedWords").append(submittedWord + "\n"); // Display the submitted word
+	  }
+
+	  $("#wordInput").val(""); // Clear the input field
+	}
+
+	$(document).ready(function() {
+	  fetchWordLists(function() {
+	  
+	    $("#shuffleButton").click(function() {
+			shuffleLetters();
+	    });
+
+		$("#submitButton").on("click", function(event) {
+		  event.preventDefault(); // Prevent form submission
+		  submitWord();
+		});
+
+		$("#wordInput").on("keypress", function(event) {
+		  if (event.which === 13) {
+			event.preventDefault(); // Prevent form submission on Enter key press
+			submitWord();
+		  }
+		});
+
+		$("#cheatSheetButton").click(function() {
+		  $("#cheatSheet").toggle();
+		});
+	  });
+	});
   </script>
 </body>
 </html>
