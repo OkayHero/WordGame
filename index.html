@@ -3,115 +3,220 @@
 <head>
   <title>The BG Challenge</title>
   <style>
-	  body {
-		background-color: #fdf0f4;
-		color: #252a34;
-		font-family: 'Courier New', Courier, monospace;
-		text-align: center;
-	  }
+		body {
+		  background-color: #fdf0f4;
+		  color: #252a34;
+		  font-family: 'Courier New', Courier, monospace;
+		  text-align: center;
+		  font-size: 16px;
+		  margin: 0;
+		  padding: 1rem;
+		}
 
-	  h1 {
-		font-size: 36px;
-		margin-top: 50px;
-		color: #fe4a49;
-	  }
+		h1 {
+		  font-size: 2.5rem;
+		  margin-top: 2rem;
+		  color: #fe4a49;
+		}
 
-	  #score {
-		font-size: 24px;
-		margin-top: 20px;
-	  }
+		#score {
+		  font-size: 2rem;
+		  margin-top: 1.5rem;
+		}
 
-	  #letters {
-		font-size: 24px;
-		margin-top: 20px;
-		color: #61dafb;
-	  }
+		#letters {
+		  font-size: 2rem;
+		  margin-top: 1.5rem;
+		  color: #61dafb;
+		}
 
-	  #requiredLetter {
-		font-size: 18px;
-		margin-top: 10px;
-		font-weight: bold;
-		color: #ff8080; /* Updated required letter button color */
-	  }
+		#requiredLetter {
+		  font-size: 1.5rem;
+		  margin-top: 1rem;
+		  font-weight: bold;
+		  color: #ff8080;
+		}
 
-	  #letterButtons {
-		margin-top: 30px;
-	  }
+		#letterButtons {
+		  display: flex;
+		  flex-wrap: wrap;
+		  justify-content: center;
+		  margin-top: 2rem;
+		}
 
-	  .letterButton {
-		display: inline-block;
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
-		background-color: #61dafb;
-		margin: 5px;
-		line-height: 50px;
-		font-size: 20px;
-		color: #ffffff;
-		cursor: pointer;
-	  }
+		.letterButton {
+		  display: inline-flex;
+		  align-items: center;
+		  justify-content: center;
+		  width: 4rem;
+		  height: 4rem;
+		  border-radius: 50%;
+		  background-color: #61dafb;
+		  margin: 0.625rem;
+		  font-size: 2rem;
+		  color: #ffffff;
+		  cursor: pointer;
+		}
 
-	.letterButton.required {
-	  background-color: #FF8080;
-	  color: #ffffff;
-	}
+		.letterButton.required {
+		  background-color: #FF8080;
+		  color: #ffffff;
+		}
 
-	  #shuffleButton {
-		margin-top: 20px;
-		background-color: #61dafb;
-		color: #ffffff;
-		border: none;
-		padding: 10px 20px;
-		font-size: 18px;
-		border-radius: 5px;
-		cursor: pointer;
-	  }
+		#shuffleButton {
+		  margin-top: 1.5rem;
+		  background-color: #61dafb;
+		  color: #ffffff;
+		  border: none;
+		  padding: 0.625rem 1.25rem;
+		  font-size: 1.5rem;
+		  border-radius: 0.3125rem;
+		  cursor: pointer;
+		}
 
-	  #submissionBox {
-		margin-top: 30px;
-	  }
+		#submissionBox {
+		  margin-top: 2rem;
+		}
 
-	  #submitButton {
-		margin-top: 10px;
-		background-color: #61dafb;
-		color: #ffffff;
-		border: none;
-		padding: 10px 20px;
-		font-size: 18px;
-		border-radius: 5px;
-		cursor: pointer;
-	  }
+		#submissionBox input[type="text"] {
+		  font-size: 1.5rem;
+		  padding: 0.5rem;
+		}
 
-	  #wordsLeft {
-		font-size: 18px;
-		margin-top: 30px;
-	  }
+		#submitButton {
+		  margin-top: 1rem;
+		  background-color: #61dafb;
+		  color: #ffffff;
+		  border: none;
+		  padding: 0.625rem 1.25rem;
+		  font-size: 1.5rem;
+		  border-radius: 0.3125rem;
+		  cursor: pointer;
+		}
 
-	  #submittedWords {
-		font-size: 18px;
-		margin-top: 30px;
-		text-align: left;
-		white-space: pre;
-	  }
+		#wordsLeft {
+		  font-size: 1.5rem;
+		  margin-top: 2rem;
+		}
 
-	  #cheatSheetButton {
-		margin-top: 20px;
-		background-color: #61dafb;
-		color: #ffffff;
-		border: none;
-		padding: 10px 20px;
-		font-size: 18px;
-		border-radius: 5px;
-		cursor: pointer;
-	  }
+		#submittedWordsTitle {
+		  font-size: 1.5rem;
+		  margin-top: 2rem;
+		}
 
-	  #cheatSheet {
-		font-size: 18px;
-		margin-top: 30px;
-		text-align: left;
-		white-space: pre;
-		display: none;
-	  }
+		#submittedWordsContainer {
+		  text-align: center;
+		  margin-top: 2rem;
+		}
+
+		#submittedWords {
+		  font-size: 1.5rem;
+		  text-align: center;
+		  white-space: pre;
+		}
+
+		#cheatSheetButton {
+		  margin-top: 1.5rem;
+		  background-color: #61dafb;
+		  color: #ffffff;
+		  border: none;
+		  padding: 0.625rem 1.25rem;
+		  font-size: 1.5rem;
+		  border-radius: 0.3125rem;
+		  cursor: pointer;
+		}
+
+		#cheatSheet {
+		  font-size: 1.5rem;
+		  margin-top: 2rem;
+		  white-space: pre;
+		  display: none;
+		  margin: 0 auto;
+		  text-align: center;
+		}
+
+		@media (max-width: 480px) {
+		  h1 {
+			font-size: 2rem;
+			margin-top: 1.5rem;
+		  }
+
+		  #score {
+			font-size: 1.5rem;
+			margin-top: 1rem;
+		  }
+
+		  #letters {
+			font-size: 1.5rem;
+			margin-top: 1rem;
+		  }
+
+		  #requiredLetter {
+			font-size: 1.25rem;
+			margin-top: 0.75rem;
+		  }
+
+		  #letterButtons {
+			margin-top: 1.5rem;
+		  }
+
+		  .letterButton {
+			width: 3rem;
+			height: 3rem;
+			font-size: 1.5rem;
+			margin: 0.3125rem;
+		  }
+
+		  #shuffleButton {
+			margin-top: 1rem;
+			font-size: 1.25rem;
+			padding: 0.3125rem 0.625rem;
+		  }
+
+		  #submissionBox {
+			margin-top: 1.5rem;
+		  }
+
+		  #submissionBox input[type="text"] {
+			font-size: 1.25rem;
+			padding: 0.375rem;
+		  }
+
+		  #submitButton {
+			margin-top: 0.75rem;
+			font-size: 1.25rem;
+			padding: 0.3125rem 0.625rem;
+		  }
+
+		  #wordsLeft {
+			font-size: 1.25rem;
+			margin-top: 1.5rem;
+		  }
+
+		  #submittedWordsTitle {
+			font-size: 1.25rem;
+			margin-top: 1.5rem;
+		  }
+
+		  #submittedWordsContainer {
+			margin-top: 1.5rem;
+		  }
+
+		  #submittedWords {
+			font-size: 1.25rem;
+		  }
+
+		  #cheatSheetButton {
+			margin-top: 1.5rem;
+			font-size: 1.25rem;
+			padding: 0.3125rem 0.625rem;
+		  }
+
+		  #cheatSheet {
+			font-size: 1.25rem;
+			margin-top: 1.5rem;
+		  }
+		}
 	</style>
 </head>
 <body>
@@ -120,18 +225,22 @@
   <p id="letters"></p>
   <p id="requiredLetter"></p>
   <div id="letterButtons"></div>
-  <button id="shuffleButton">Shuffle Letters</button>
+  <button id="shuffleButton">Shuffle</button>
   <div id="submissionBox">
     <input type="text" id="wordInput" placeholder="Enter a word">
     <button id="submitButton">Submit</button>
   </div>
   <p id="wordsLeft">Words Left: <span id="wordsLeftValue">0</span></p>
-  <p id="submittedWords"></p>
-  <button id="cheatSheetButton">Toggle Cheat Sheet</button>
+  <p id="submittedWordsTitle">Submitted Words:</p>
+  <div id="submittedWordsContainer">
+    <p id="submittedWords"></p>
+  </div>
+  <button id="cheatSheetButton">Cheat Sheet</button>
   <div id="cheatSheet"></div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
 	var wordLists = [];
+	var score = 0;
 
 	function shuffleLetters() {
 	  var letterButtons = $(".letterButton");
@@ -237,6 +346,11 @@
 	  generateCheatSheet(letters, requiredLetter); // Call generateCheatSheet separately after updating the letters
 	}
 
+	function updateScore(points) {
+      score += points;
+      $("#scoreValue").text(score);
+    }
+	
 	function updateLetters(letters, requiredLetter) {
 	  var lettersHTML = "";
 	  for (var i = 0; i < letters.length; i++) {
@@ -331,7 +445,8 @@
 		$("#cheatSheet").text(possibleWords.join("\n")); // Update the cheat sheet
 		wordsLeft = possibleWords.length; // Update the wordsLeft counter
 		$("#wordsLeftValue").text(wordsLeft);
-		$("#submittedWords").append(submittedWord + "\n"); // Display the submitted word
+        $("#submittedWords").append('<span class="submittedWord">' + submittedWord + '</span><br>');
+	 	updateScore(submittedWord.length);
 	  }
 
 	  $("#wordInput").val(""); // Clear the input field
@@ -358,7 +473,10 @@
 
 		$("#cheatSheetButton").click(function() {
 		  $("#cheatSheet").toggle();
+		  
+		
 		});
+		
 	  });
 	});
   </script>
